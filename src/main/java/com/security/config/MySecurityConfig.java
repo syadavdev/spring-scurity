@@ -32,10 +32,13 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/hello").authenticated()
 		.antMatchers("/helloWorld").hasAnyRole("user")
 		.antMatchers("/bye").permitAll()
+		.antMatchers("/myCustomLogin").permitAll()
 		.and()
-		.formLogin()
+		.formLogin().loginPage("/myCustomLogin")
 		.and()
-		.httpBasic();
+		.httpBasic()
+		.and()
+		.logout();
 	}
 
 }
