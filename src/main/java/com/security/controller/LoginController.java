@@ -1,13 +1,22 @@
 package com.security.controller;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.security.dao.SignupDAO;
+import com.security.dto.ChangePasswordDTO;
 import com.security.dto.SignupDTO;
 
 @Controller
@@ -17,7 +26,11 @@ public class LoginController {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	SignupDAO signupDAO;
+	private JdbcUserDetailsManager jdbcUserDetailsManager;
+	
+	/*
+	 * @Autowired SignupDAO signupDAO;
+	 */
 	
 	@GetMapping("/myCustomLogin")
 	public String login() {
@@ -34,8 +47,40 @@ public class LoginController {
 		String encodedPassword = passwordEncoder.encode(signupDTO.getPassword());
 		signupDTO.setPassword(encodedPassword);
 		
-		signupDAO.saveUser(signupDTO);
+		UserDetails user = User.withUsername(signupDTO.getUsername())
+		.password(signupDTO.getPassword())
+		.authorities("USER").build();
+		
+		jdbcUserDetailsManager.createUser(user);
+		
+		//signupDAO.saveUser(signupDTO);
 		return "redirect:/myCustomLogin";
+	}
+	
+	@GetMapping("/deleteUser")
+	public String deleteUser(@RequestParam("username") String username) {
+		jdbcUserDetailsManager.deleteUser(username);
+		
+		return "redirect:/myCustomLogin";
+	}
+	
+	@GetMapping("/changePassword")
+	public String changePassword(Model model) {	
+		model.addAttribute("change-pwd", new ChangePasswordDTO());
+		return "change-password";
+	}
+	
+	@PostMapping("/processPassword")
+	public String changePassword(ChangePasswordDTO request) {
+		String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+		Boolean matches = passwordEncoder.matches(request.getConfirmPassword(), encodedPassword);
+		
+		if(!matches)
+			return "redirect:/changePassword?invalidPassword";
+		
+		jdbcUserDetailsManager.changePassword(request.getOldPassword(), encodedPassword);
+		
+		return "redirect:/";
 	}
 	
 

@@ -7,8 +7,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 // create filter chain
 
@@ -27,13 +31,28 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		
 		/*
 		 * auth .inMemoryAuthentication() .withUser("sandi").password(
 		 * "{bcrypt}$2a$10$w89p8xrQEujsLXCjRLuP3OVax0Ncw.SpkxWzT0KPugWH2Z6izthTu").roles
 		 * ("admin") .and() .withUser("santi").password("{noop}santi").roles("user");
 		 */
+		 
 		
 		auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
+		
+		/*
+		 * UserDetailsManager manager = new InMemoryUserDetailsManager();
+		 * 
+		 * UserDetails sandeep =
+		 * User.withUsername("sandi").password("sandi").roles("ADMIN").build();
+		 * UserDetails santi =
+		 * User.withUsername("santi").password("santi").roles("ADMIN,USER").build();
+		 * 
+		 * manager.createUser(santi); manager.createUser(sandeep);
+		 * 
+		 * auth.userDetailsService(manager);
+		 */
 
 	}
 	

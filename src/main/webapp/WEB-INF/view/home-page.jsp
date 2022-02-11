@@ -21,5 +21,14 @@
       <form:form action="logout" method="POST">
       	<input type="submit" value="logout" />
       </form:form>
+      
+      <br>
+      
+      <a href="deleteUser?username=${username}">Delete Account</a>
+      
+      &nbsp;
+      
+      <a href="changePassword">Change Password</a>
+      
 </body>
 </html>
