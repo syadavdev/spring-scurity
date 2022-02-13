@@ -10,6 +10,10 @@
 <body>
 <div align="center">
 
+	  <c:if test="${param.notMatched != null}">
+	  	<i style="color: red;">Confirm password not matching</i>
+	  </c:if>
+	  
 	  <c:if test="${param.invalidPassword != null}">
 	  	<i style="color: red;">Invalid old password</i>
 	  </c:if>

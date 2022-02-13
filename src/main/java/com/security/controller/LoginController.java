@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,13 +72,16 @@ public class LoginController {
 	}
 	
 	@PostMapping("/processPassword")
-	public String changePassword(ChangePasswordDTO request) {
-		String encodedPassword = passwordEncoder.encode(request.getNewPassword());
-		Boolean matches = passwordEncoder.matches(request.getConfirmPassword(), encodedPassword);
+	public String changePassword(Authentication auth, ChangePasswordDTO request) {
+		if(!request.getNewPassword().equals(request.getConfirmPassword()))
+			return "redirect:/changePassword?notMatched";
 		
+		UserDetails user = jdbcUserDetailsManager.loadUserByUsername(auth.getName());
+		Boolean matches = passwordEncoder.matches(request.getOldPassword(), user.getPassword());
 		if(!matches)
 			return "redirect:/changePassword?invalidPassword";
 		
+		String encodedPassword = passwordEncoder.encode(request.getNewPassword());
 		jdbcUserDetailsManager.changePassword(request.getOldPassword(), encodedPassword);
 		
 		return "redirect:/";

@@ -48,6 +48,12 @@ public class MyAppConfig {
 	public JdbcUserDetailsManager jdbcUserDetailManager() {
 		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
 		jdbcUserDetailsManager.setDataSource(dataSource());
+		
+		//Providing custom queries
+		jdbcUserDetailsManager.setUserExistsSql("select username from users where username = ?");
+		jdbcUserDetailsManager.setDeleteUserSql("delete from users where username = ?");
+		//jdbcUserDetailsManager.setDeleteUserAuthoritiesSql("delete from authorities where username = ?");
+		
 		return jdbcUserDetailsManager;
 	}
 
