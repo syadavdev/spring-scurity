@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+import com.security.config.service.CustomerUserDetailsServiceImpl;
+
 // create filter chain
 
 @EnableWebSecurity(debug = true)
@@ -29,6 +31,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private CustomerUserDetailsServiceImpl customerService;
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		
@@ -39,7 +44,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 		 */
 		 
 		
-		auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
+		//auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
 		
 		/*
 		 * UserDetailsManager manager = new InMemoryUserDetailsManager();
@@ -53,6 +58,8 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 		 * 
 		 * auth.userDetailsService(manager);
 		 */
+		
+		auth.userDetailsService(customerService).passwordEncoder(passwordEncoder);
 
 	}
 	
