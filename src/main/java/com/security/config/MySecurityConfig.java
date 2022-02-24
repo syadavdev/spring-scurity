@@ -13,8 +13,10 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.security.config.service.CustomerUserDetailsServiceImpl;
+import com.security.filter.MyAuthenticationLoggerFilter;
+import com.security.service.CustomerUserDetailsServiceImpl;
 
 // create filter chain
 
@@ -74,6 +76,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 		 */
 		
 		http
+		.addFilterAfter(new MyAuthenticationLoggerFilter(), BasicAuthenticationFilter.class)
 		.authorizeRequests()
 		.antMatchers("/admin").hasAuthority("ADMIN")
 		.antMatchers("/user").hasAuthority("USER")

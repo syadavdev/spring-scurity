@@ -1,4 +1,4 @@
-package com.security.config.service;
+package com.security.service;
 
 import java.util.List;
 import java.util.ArrayList;
