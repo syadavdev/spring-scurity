@@ -23,15 +23,15 @@ public class CustomerUserDetailsServiceImpl implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Customer customer = dao.fetchCustomerByCustomerName(username);
-		if(customer == null)
+		List<Customer> customers = dao.fetchCustomerByCustomerName(username);
+		if(customers.size() > 0)
 			throw new UsernameNotFoundException("User is not found");
 		
-		List<GrantedAuthority> authorities = new ArrayList();
-		authorities.add(new SimpleGrantedAuthority(customer.getRoles()));
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities.add(new SimpleGrantedAuthority(customers.get(0).getRoles()));
 		
-		return User.withUsername(customer.getUsername())
-				.password(customer.getPassword())
+		return User.withUsername(customers.get(0).getUsername())
+				.password(customers.get(0).getPassword())
 				.authorities(authorities).build();
 	}
 

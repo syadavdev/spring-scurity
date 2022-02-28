@@ -15,6 +15,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.security.authenticationproviders.MyCustomAuthenticationProvider;
 import com.security.filter.MyAuthenticationLoggerFilter;
 import com.security.service.CustomerUserDetailsServiceImpl;
 
@@ -35,6 +36,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private CustomerUserDetailsServiceImpl customerService;
+	
+	@Autowired
+	private MyCustomAuthenticationProvider provider;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -61,7 +65,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
 		 * auth.userDetailsService(manager);
 		 */
 		
-		auth.userDetailsService(customerService).passwordEncoder(passwordEncoder);
+		//auth.userDetailsService(customerService).passwordEncoder(passwordEncoder);
+		
+		auth.authenticationProvider(provider);
 
 	}
 	

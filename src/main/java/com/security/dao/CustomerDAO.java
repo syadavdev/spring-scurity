@@ -1,9 +1,11 @@
 package com.security.dao;
 
+import java.util.List;
+
 import com.security.dto.Customer;
 
 public interface CustomerDAO {
 	
-	public Customer fetchCustomerByCustomerName(String username);
+	public List<Customer> fetchCustomerByCustomerName(String username);
 
 }
